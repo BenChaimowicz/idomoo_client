@@ -1,10 +1,10 @@
 import './App.css'
-import { UploadButton } from './components/upload_button';
+import { MainForm } from './components/main_form';
 
 function App() {
   return (
     <>
-      <UploadButton />
+      <MainForm />
     </>
   )
 }

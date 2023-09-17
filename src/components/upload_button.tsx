@@ -1,7 +1,12 @@
 import axios from 'axios';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, MouseEvent, useRef } from 'react';
 
 export const UploadButton = (): JSX.Element => {
+    const hiddenInput = useRef<HTMLInputElement>(null);
+
+    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+        hiddenInput.current!.click();
+    }
 
     const uploadFile = async (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || !e.target.files[0]) return;
@@ -24,8 +29,9 @@ export const UploadButton = (): JSX.Element => {
 
 
     return (<>
-        <form action="/upload" encType='multipart/form-data'>
-            <input type="file" onChange={uploadFile} name='image' />
+        <button onClick={handleClick}>Upload</button>
+        <form encType='multipart/form-data'>
+            <input type="file" onChange={uploadFile} name='image' style={{ display: 'none' }} ref={hiddenInput} />
         </form>
     </>)
 }

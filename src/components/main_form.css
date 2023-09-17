@@ -1,0 +1,12 @@
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 2vh 0 2vh 0;
+}
+
+.formRow {
+    display: flex;
+    flex-direction: row;
+    padding: 1vh 0 1vh 0;
+}
