@@ -1,4 +1,23 @@
+.infoContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.nameContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.emailContainer {
+    padding: 2vh 0.5vw 0 0;
+    display: flex;
+    flex-direction: row;
+}
 
 .nameField {
     padding: 0 0.5vw 0 0;
+}
+
+.emailInput {
+    width: 100%;
 }
