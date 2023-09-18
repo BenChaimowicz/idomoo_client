@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './main_form.css';
-import { UploadButton } from './upload_button';
+import { FileDetails } from './file_details';
 import { OnChangeUserDetailsEvent, UserDetails } from './user_details';
 
 type GenerateVideoForm = { name: string, };
@@ -26,7 +26,7 @@ export const MainForm = (): JSX.Element => {
                 <UserDetails onChangeUser={changeUserDetails} />
             </div>
             <div className='formRow' id="vars">
-                <UploadButton />
+                <FileDetails />
             </div>
             <div className='formRow' id="videoOpts"></div>
             <div className='formRow' id="footer"></div>

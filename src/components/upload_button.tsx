@@ -1,7 +1,11 @@
 import axios from 'axios';
-import { ChangeEvent, MouseEvent, useRef } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 
-export const UploadButton = (): JSX.Element => {
+export type UploadButtonProps = { onChangeImageHandler: (e: string) => void };
+
+export const UploadButton = (props: UploadButtonProps): JSX.Element => {
+    const [image, setImage] = useState<string>('');
+
     const hiddenInput = useRef<HTMLInputElement>(null);
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -14,18 +18,25 @@ export const UploadButton = (): JSX.Element => {
 
 
 
-        const response = axios.post(`${import.meta.env.VITE_SERVER_URL}/upload`,
+        axios.post(`${import.meta.env.VITE_SERVER_URL}/upload`,
             formData,
             {
                 headers: {
                     "Content-Type": 'multipart/form-data',
                 }
-            }).then(r => console.log(`R:`, r.data)).catch(e => console.error(e));
+            }).then(r => {
+                console.log(`R:`, r.data);
+                setImage(r.data);
 
-        console.log(response);
-
+            }).catch(e => {
+                console.error(e)
+                setImage('');
+            });
     }
 
+    useEffect(() => {
+        props.onChangeImageHandler(image);
+    }, [image]);
 
 
     return (<>

@@ -1,0 +1,18 @@
+.third{
+    display: flex;
+    flex: 1;
+}
+
+.previewColor {
+    min-width: 100px;
+    min-height: 42px;
+    border: 1px solid #747bff;
+    border-radius: 8px;
+}
+
+.previewImg {
+    border: 1px solid #747bff;
+    border-radius: 8px;
+    max-height: 42px;
+    max-width: 100px;
+}
