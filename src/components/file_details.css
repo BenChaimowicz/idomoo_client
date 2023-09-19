@@ -1,6 +1,6 @@
 .third{
     display: flex;
-    flex: 1;
+    flex: 2;
 }
 
 .previewColor {
@@ -15,4 +15,15 @@
     border-radius: 8px;
     max-height: 42px;
     max-width: 100px;
+}
+
+.mediaElementContainer {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.divider {
+    flex: 1;
 }

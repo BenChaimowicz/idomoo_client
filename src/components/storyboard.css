@@ -1,0 +1,27 @@
+.varContainer {
+    display: flex;
+    flex: 1;
+}
+
+.inputContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    padding-top: 0.5rem;
+}
+
+.varInput {
+    flex: 5;
+}
+
+.divider {
+    flex: 1;
+}
+
+.elementContainer {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    flex-direction: column;
+}

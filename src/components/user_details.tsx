@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import './user_details.css';
 
 export type UserDetailsParams = { onChangeUser: (e: OnChangeUserDetailsEvent) => void };
-export type OnChangeUserDetailsEvent = { firstName?: string, lastName?: string, email?: string };
+export type OnChangeUserDetailsEvent = { name?: string, email?: string };
 
 export const UserDetails = (props: UserDetailsParams): JSX.Element => {
 
@@ -14,11 +14,11 @@ export const UserDetails = (props: UserDetailsParams): JSX.Element => {
         switch (e.target.name) {
             case 'firstNameInput':
                 setFirstName(e.target.value);
-                props.onChangeUser({ firstName });
+                props.onChangeUser({ name: `${firstName} ${lastName}` });
                 break;
             case 'lastNameInput':
                 setLastName(e.target.value);
-                props.onChangeUser({ lastName });
+                props.onChangeUser({ name: `${firstName} ${lastName}` });
                 break;
             case 'emailInput':
                 setEmail(e.target.value);

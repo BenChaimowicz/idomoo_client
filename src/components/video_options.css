@@ -1,0 +1,24 @@
+.videoOptionsContainer {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+.selectContainer, .selectContainerLeft,  .selectContainerRight {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+}
+
+.selectContainerLeft {
+    padding-right: 0.5vw;
+}
+.selectContainerRight {
+    padding-left: 0.5vw;
+    flex: 4;
+}
+
+.selectContainer {
+    padding: 0 0.5vw;
+    flex: 4;
+}

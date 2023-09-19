@@ -27,7 +27,6 @@ export const UploadButton = (props: UploadButtonProps): JSX.Element => {
             }).then(r => {
                 console.log(`R:`, r.data);
                 setImage(r.data);
-
             }).catch(e => {
                 console.error(e)
                 setImage('');
