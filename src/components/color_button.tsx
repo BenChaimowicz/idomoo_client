@@ -15,9 +15,17 @@ export const ColorButton = (props: ColorButtonProps): JSX.Element => {
     const onColorChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.value) return;
         setColor(e.target.value);
-        props.onColorChangeHandler(color);
+        props.onColorChangeHandler(hexToRGB(color));
     }
 
+    const hexToRGB = (hex: string): string => {
+        hex = hex.replace(/^#/, '');
+        const bigint = parseInt(hex, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return `rgb(${r},${g},${b})`;
+    }
 
     return <>
         <button onClick={handleClick}>Color</button>

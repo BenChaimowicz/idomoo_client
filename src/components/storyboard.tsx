@@ -1,17 +1,17 @@
 import './storyboard.css';
 import { ChangeEvent, useEffect, useState } from "react"
-import { StoryboardElement } from "./main_form";
+import { GenerateVideoDataElement, StoryboardElement } from "./main_form";
 
-export type StoryBoardProps = { elements?: StoryboardElement[], onChangeStoryboard: (storyboard: StoryboardElement[]) => void };
+export type StoryBoardProps = { elements?: StoryboardElement[], onChangeStoryboard: (storyboard: GenerateVideoDataElement[]) => void };
 
 export const StoryBoardView = (props: StoryBoardProps): JSX.Element => {
     const [isLoading, setLoading] = useState<boolean>(true);
-    const [storyboard, setStoryboard] = useState<StoryboardElement[]>([]);
+    const [storyboard, setStoryboard] = useState<GenerateVideoDataElement[]>([]);
 
     const changeStoryBoard = (e: ChangeEvent<HTMLInputElement>, index: number) => {
         if (!e.target.value || !e.target.name) return;
         const tempSb = [...storyboard];
-        tempSb[index] = { description: '', key: e.target.name, val: e.target.value };
+        tempSb[index] = { key: e.target.name, val: e.target.value };
         setStoryboard(tempSb);
     }
 
@@ -23,7 +23,7 @@ export const StoryBoardView = (props: StoryBoardProps): JSX.Element => {
     }, [props.elements]);
 
     useEffect(() => {
-        props.onChangeStoryboard(storyboard);
+        props.onChangeStoryboard(storyboard.map(t => ({ key: t.key, val: t.val })));
     }, [storyboard]);
 
     return <>

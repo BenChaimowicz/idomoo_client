@@ -1,3 +1,8 @@
+.mediaContainer {
+    display: flex;
+    flex: 1;
+}
+
 .third{
     display: flex;
     flex: 2;
@@ -22,6 +27,7 @@
     flex: 1;
     justify-content: center;
     align-items: center;
+    padding-top: 0.5rem;
 }
 
 .divider {

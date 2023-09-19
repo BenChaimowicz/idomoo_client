@@ -20,8 +20,8 @@ export const MainForm = (): JSX.Element => {
     const [mediaElements, setMediaElements] = useState<StoryboardElement[]>([]);
     const [textElements, setTextElements] = useState<StoryboardElement[]>([]);
     const [storyboard, setStoryboard] = useState<StoryboardResponse>();
-    const [media, setMedia] = useState<StoryboardElement[]>([]);
-    const [text, setText] = useState<StoryboardElement[]>([]);
+    const [media, setMedia] = useState<GenerateVideoDataElement[]>([]);
+    const [text, setText] = useState<GenerateVideoDataElement[]>([]);
     const [videoForm, setVideoForm] = useState<GenerateVideoForm>({
         name: '',
         email: '',
@@ -37,16 +37,15 @@ export const MainForm = (): JSX.Element => {
     const changeVideoDetails = (e: VideoOptionsForm) => {
         setVideoForm(prev => { return { ...prev, ...e } });
     }
-    const changeStoryboard = (e: StoryboardElement[]) => {
+    const changeStoryboard = (e: GenerateVideoDataElement[]) => {
         setText([...e]);
     }
-    const changeMedia = (e: StoryboardElement[]) => {
+    const changeMedia = (e: GenerateVideoDataElement[]) => {
         setMedia([...e]);
     }
 
     useEffect(() => {
         console.log(videoForm);
-
     }, [videoForm])
 
 
@@ -56,14 +55,18 @@ export const MainForm = (): JSX.Element => {
     }
 
     const generateVideo = async () => {
+        console.log(videoForm, storyboard);
+
         if (!storyboard || !storyboard.storyboard_id) return;
-        if (!videoForm || !videoForm.format || !videoForm.height || videoForm.quality) return;
+        if (!videoForm || !videoForm.format || !videoForm.height || !videoForm.quality) return;
         const genForm: GenerateVideoRequest = {
             storyboard_id: storyboard?.storyboard_id,
             output: { video: [{ format: videoForm.format, height: videoForm.height, quality: videoForm.quality }] },
             data: [...media, ...text]
         }
         setLoading(true);
+        console.log(genForm);
+
         const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/storyboard/generate`, genForm);
         console.log(response.data);
         setLoading(false);
@@ -104,7 +107,7 @@ export const MainForm = (): JSX.Element => {
                 <VideoOptions onChangeVideoOptions={changeVideoDetails} />
             </div>
             <div className='formRow' id="footer">
-                <button className='genButton' onClick={generateVideo}>Generate</button>
+                <button className='genButton' onClick={() => generateVideo()}>Generate</button>
             </div>
 
         </div>
