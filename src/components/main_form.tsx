@@ -6,6 +6,7 @@ import { VideoOptions, VideoOptionProps, VideoOptionsForm } from './video_option
 import { StoryBoardView } from './storyboard';
 import axios from 'axios';
 import { VideoPlayer } from './video_player';
+import { Spinner } from './spinner';
 
 type GenerateVideoForm = { name: string, email: string, data: StoryboardElement[], format: string, quality: number, height: number };
 export type GenerateVideoRequest = { storyboard_id: number, data: GenerateVideoDataElement[], output: OutputRoot };
@@ -31,6 +32,7 @@ export const MainForm = (): JSX.Element => {
     const [checkURL, setCheckURL] = useState<string>();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [linkToVideo, setLinkToVideo] = useState<string>();
+    const [errors, setErrors] = useState<string | null>(null);
     const [videoForm, setVideoForm] = useState<GenerateVideoForm>({
         name: '',
         email: '',
@@ -41,6 +43,7 @@ export const MainForm = (): JSX.Element => {
     });
 
     const changeUserDetails = (e: OnChangeUserDetailsEvent) => {
+
         setVideoForm(prev => { return { ...prev, ...e } });
     };
     const changeVideoDetails = (e: VideoOptionsForm) => {
@@ -54,7 +57,7 @@ export const MainForm = (): JSX.Element => {
     }
 
     useEffect(() => {
-        console.log(videoForm);
+        setErrors(null);
     }, [videoForm])
 
 
@@ -66,15 +69,21 @@ export const MainForm = (): JSX.Element => {
     const generateVideo = async () => {
         if (!storyboard || !storyboard.storyboard_id) return;
         if (!videoForm || !videoForm.format || !videoForm.height || !videoForm.quality) return;
+        setLoading(true);
         const genForm: GenerateVideoRequest = {
             storyboard_id: storyboard?.storyboard_id,
             output: { video: [{ format: videoForm.format, height: videoForm.height, quality: videoForm.quality }] },
             data: [...media, ...text]
         }
-        setLoading(true);
+        if (genForm.data.length !== storyboard.data.length) {
+            setLoading(false);
+            setErrors('Please check all media and text fields are properly filled');
+        }
         console.log(genForm);
         const { data } = await axios.post<GenerateVideoResponse>(`${import.meta.env.VITE_SERVER_URL}/storyboard/generate`, genForm);
-        setCheckURL(data.check_status_url);
+        if (data.check_status_url) {
+            setCheckURL(data.check_status_url);
+        }
         if (data.output.video) {
             setLinkToVideo(data.output.video[0].links?.url);
         }
@@ -138,7 +147,8 @@ export const MainForm = (): JSX.Element => {
                     <VideoOptions onChangeVideoOptions={changeVideoDetails} />
                 </div>
                 <div className='formRow' id="footer">
-                    <button className='genButton' onClick={generateVideo}>Generate</button>
+                    {isLoading ? <Spinner /> : <button className='genButton' onClick={generateVideo}>Generate</button>}
+                    {errors ? <span>{errors}</span> : <></>}
                 </div>
 
             </div> :

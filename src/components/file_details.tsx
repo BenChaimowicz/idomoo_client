@@ -30,13 +30,11 @@ export const FileDetails = (props: FileDetailsProps): JSX.Element => {
         setMedia(tmpMedia);
     }
 
-    let imageURL = `${import.meta.env.VITE_SERVERBASE}${image}`;
-
     const getImage = async () => {
         if (!image) return;
         const options = {
             method: 'GET',
-            url: imageURL,
+            url: image,
         };
         axios.request(options);
     }
@@ -69,7 +67,7 @@ export const FileDetails = (props: FileDetailsProps): JSX.Element => {
                             <ColorButton onColorChangeHandler={(e) => onColorChange(e, me, i)} />
                         </div>
                         <div className='third'>
-                            {image ? <img className='previewImg' src={imageURL} alt="" /> :
+                            {image ? <img className='previewImg' src={image} alt="" /> :
                                 <div className='previewColor' style={{ backgroundColor: color }}></div>}
                         </div>
                     </div>
