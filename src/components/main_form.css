@@ -21,3 +21,13 @@
     text-shadow: 0 0 0.125em #f9f9f9, 0 0 0.25em currentColor;
     box-shadow: 0 0 0.5em #747bff;
 }
+
+.third {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.watch {
+    text-shadow: 0 0 0.25em #747bff;
+}

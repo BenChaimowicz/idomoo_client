@@ -5,7 +5,6 @@ import { OnChangeUserDetailsEvent, UserDetails } from './user_details';
 import { VideoOptions, VideoOptionsForm } from './video_options';
 import { StoryBoardView } from './storyboard';
 import axios from 'axios';
-import { VideoPlayer } from './video_player';
 import { Spinner } from './spinner';
 
 type GenerateVideoForm = { name: string, email: string, data: StoryboardElement[], format: string, quality: number, height: number };
@@ -90,14 +89,13 @@ export const MainForm = (): JSX.Element => {
     }
 
     const checkVideoStatus = async () => {
-        console.log('video status check');
         if (!checkURL || !isLoading) return;
         const { data } = await axios.get<CheckStatusResponse>(`${import.meta.env.VITE_SERVER_URL}/status?link=${encodeURIComponent(checkURL)}`);
         console.log('video status:', data.status);
         if ((data.status !== 'ERROR' && data.status !== 'VIDEO_AVAILABLE') || isPlaying) {
             setTimeout(() => {
                 checkVideoStatus();
-            }, 5000);
+            }, 8000);
         }
         if (data.status === 'VIDEO_AVAILABLE') {
             setLoading(false);
@@ -105,9 +103,6 @@ export const MainForm = (): JSX.Element => {
         }
     }
 
-    const backClick = () => {
-        setIsPlaying(false);
-    }
     useEffect(() => {
         setMediaElements([]);
         setTextElements([]);
@@ -131,28 +126,30 @@ export const MainForm = (): JSX.Element => {
     }, [checkURL]);
 
     return <>
-        {!isPlaying ?
-            <div className='mainContainer'>
-                <div className='formRow' id="header">Enter the details below in order to generate your video</div>
-                <div className='formRow' id="nameInfo">
-                    <UserDetails onChangeUser={changeUserDetails} />
+        <div className='mainContainer'>
+            <div className='formRow' id="header">Enter the details below in order to generate your video</div>
+            <div className='formRow' id="nameInfo">
+                <UserDetails onChangeUser={changeUserDetails} />
+            </div>
+            <div className='formRow' id="vars">
+                <FileDetails onChangeMedia={changeMedia} elements={mediaElements} />
+            </div>
+            <div className='formRow' id="storyboard">
+                <StoryBoardView onChangeStoryboard={changeStoryboard} elements={textElements} />
+            </div>
+            <div className='formRow' id="videoOpts">
+                <VideoOptions onChangeVideoOptions={changeVideoDetails} />
+            </div>
+            <div className='formRow' id="footer">
+                <div className="third"></div>
+                <div className="third">
+                    {isLoading ? <Spinner /> : <button className='genButton' hidden={isPlaying} onClick={generateVideo}>Generate</button>}
                 </div>
-                <div className='formRow' id="vars">
-                    <FileDetails onChangeMedia={changeMedia} elements={mediaElements} />
-                </div>
-                <div className='formRow' id="storyboard">
-                    <StoryBoardView onChangeStoryboard={changeStoryboard} elements={textElements} />
-                </div>
-                <div className='formRow' id="videoOpts">
-                    <VideoOptions onChangeVideoOptions={changeVideoDetails} />
-                </div>
-                <div className='formRow' id="footer">
-                    {isLoading ? <Spinner /> : <button className='genButton' onClick={generateVideo}>Generate</button>}
+                <div className="third">
                     {errors ? <span>{errors}</span> : <></>}
+                    {linkToVideo && !isLoading && !errors && isPlaying ? <a href={linkToVideo} className='watch' onClick={() => setIsPlaying(false)}>Play it!</a> : <></>}
                 </div>
-
-            </div> :
-            <VideoPlayer videoURL={linkToVideo!} onBackClick={backClick} />
-        }
+            </div>
+        </div>
     </>
 }

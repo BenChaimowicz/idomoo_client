@@ -26,12 +26,13 @@ export const VideoPlayer = (props: VideoProps) => {
                 scriptTag.textContent = content;
             }
         }
-        window.location.replace(props.videoURL);
+        // window.location.replace(props.videoURL);
+
     }, []);
 
     return <>
         <div className="videoContainer">
-            <iframe src={`./src/components/player.html`} title="player" ref={iFrameRef} width='800' height='600'></iframe>
+            {/* <iframe src={`./src/components/player.html`} title="player" ref={iFrameRef} width='800' height='600'></iframe> */}
             <div className='backBtnContainer'>
                 <button onClick={props.onBackClick}>Back</button>
             </div>
