@@ -11,9 +11,14 @@ export type GenerateVideoRequest = { storyboard_id: number, data: GenerateVideoD
 export type StoryboardResponse = { storyboard_id: number, name: string, thumbnail_time: number, width: number, height: number, thumbnail: string, data: StoryboardElement[], last_modified: number, last_modified_string: string };
 export type StoryboardElement = { key: string, val: string, description: string };
 export type GenerateVideoDataElement = Omit<StoryboardElement, 'description'>;
+export type GenerateVideoResponse = { output: OutputRoot, total_cost: number, check_status_url: string };
 export type VideoOutput = { format: string, quality?: number, height: number };
 export type GIFOutput = {};
 export type OutputRoot = { video?: VideoOutput[], gif?: GIFOutput[] };
+export type CheckStatusResponse = { id: string, status: VideoStatus };
+export type VideoStatus = 'VIDEO_AVAILABLE' | 'RENDERING' | 'IN_PROCESS' | 'IN_QUEUE' | 'ERROR' | 'NOT_EXIST';
+
+
 
 export const MainForm = (): JSX.Element => {
     const [isLoading, setLoading] = useState<boolean>(true);
@@ -22,6 +27,7 @@ export const MainForm = (): JSX.Element => {
     const [storyboard, setStoryboard] = useState<StoryboardResponse>();
     const [media, setMedia] = useState<GenerateVideoDataElement[]>([]);
     const [text, setText] = useState<GenerateVideoDataElement[]>([]);
+    const [checkURL, setCheckURL] = useState<string>();
     const [videoForm, setVideoForm] = useState<GenerateVideoForm>({
         name: '',
         email: '',
@@ -55,8 +61,6 @@ export const MainForm = (): JSX.Element => {
     }
 
     const generateVideo = async () => {
-        console.log(videoForm, storyboard);
-
         if (!storyboard || !storyboard.storyboard_id) return;
         if (!videoForm || !videoForm.format || !videoForm.height || !videoForm.quality) return;
         const genForm: GenerateVideoRequest = {
@@ -66,11 +70,8 @@ export const MainForm = (): JSX.Element => {
         }
         setLoading(true);
         console.log(genForm);
-
-        const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/storyboard/generate`, genForm);
-        console.log(response.data);
-        setLoading(false);
-
+        const response = await axios.post<GenerateVideoResponse>(`${import.meta.env.VITE_SERVER_URL}/storyboard/generate`, genForm);
+        setCheckURL(response.data.check_status_url);
     }
 
     useEffect(() => {

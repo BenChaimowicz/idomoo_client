@@ -1,0 +1,47 @@
+<html>
+
+<head>
+
+    <script type="text/javascript" src="https://player.idomoo.com/latest/main.js"></script>
+
+</head>
+
+<body>
+
+    <div id="idm_player" class="idm-player"></div>
+
+    <div>
+
+        <button class="idm-cta-btn1">Loved it</button>
+
+        <button class="idm-cta-btn2">It cracked me down</button>
+
+    </div>
+
+    <script id="po">
+
+        var player_options = {
+
+            interactive: true,
+
+            size: "hd",
+
+            autoplay: true,
+
+            cta_analytics: [
+
+                ["idm-cta-btn1", "Loved it"],
+
+                ["idm-cta-btn2", "It cracked me down"]
+
+            ]
+
+        };
+
+        idmPlayerCreate(player_options, "idm_player");
+
+    </script>
+
+</body>
+
+</html>
