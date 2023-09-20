@@ -5,6 +5,7 @@ import { OnChangeUserDetailsEvent, UserDetails } from './user_details';
 import { VideoOptions, VideoOptionProps, VideoOptionsForm } from './video_options';
 import { StoryBoardView } from './storyboard';
 import axios from 'axios';
+import { VideoPlayer } from './video_player';
 
 type GenerateVideoForm = { name: string, email: string, data: StoryboardElement[], format: string, quality: number, height: number };
 export type GenerateVideoRequest = { storyboard_id: number, data: GenerateVideoDataElement[], output: OutputRoot };
@@ -12,7 +13,7 @@ export type StoryboardResponse = { storyboard_id: number, name: string, thumbnai
 export type StoryboardElement = { key: string, val: string, description: string };
 export type GenerateVideoDataElement = Omit<StoryboardElement, 'description'>;
 export type GenerateVideoResponse = { output: OutputRoot, total_cost: number, check_status_url: string };
-export type VideoOutput = { format: string, quality?: number, height: number };
+export type VideoOutput = { format: string, quality?: number, height: number, links?: { url: string } };
 export type GIFOutput = {};
 export type OutputRoot = { video?: VideoOutput[], gif?: GIFOutput[] };
 export type CheckStatusResponse = { id: string, status: VideoStatus };
@@ -21,13 +22,15 @@ export type VideoStatus = 'VIDEO_AVAILABLE' | 'RENDERING' | 'IN_PROCESS' | 'IN_Q
 
 
 export const MainForm = (): JSX.Element => {
-    const [isLoading, setLoading] = useState<boolean>(true);
+    const [isLoading, setLoading] = useState<boolean>(false);
     const [mediaElements, setMediaElements] = useState<StoryboardElement[]>([]);
     const [textElements, setTextElements] = useState<StoryboardElement[]>([]);
     const [storyboard, setStoryboard] = useState<StoryboardResponse>();
     const [media, setMedia] = useState<GenerateVideoDataElement[]>([]);
     const [text, setText] = useState<GenerateVideoDataElement[]>([]);
     const [checkURL, setCheckURL] = useState<string>();
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [linkToVideo, setLinkToVideo] = useState<string>();
     const [videoForm, setVideoForm] = useState<GenerateVideoForm>({
         name: '',
         email: '',
@@ -70,10 +73,32 @@ export const MainForm = (): JSX.Element => {
         }
         setLoading(true);
         console.log(genForm);
-        const response = await axios.post<GenerateVideoResponse>(`${import.meta.env.VITE_SERVER_URL}/storyboard/generate`, genForm);
-        setCheckURL(response.data.check_status_url);
+        const { data } = await axios.post<GenerateVideoResponse>(`${import.meta.env.VITE_SERVER_URL}/storyboard/generate`, genForm);
+        setCheckURL(data.check_status_url);
+        if (data.output.video) {
+            setLinkToVideo(data.output.video[0].links?.url);
+        }
     }
 
+    const checkVideoStatus = async () => {
+        console.log('video status check');
+        if (!checkURL || !isLoading) return;
+        const { data } = await axios.get<CheckStatusResponse>(`${import.meta.env.VITE_SERVER_URL}/status?link=${encodeURIComponent(checkURL)}`);
+        console.log('video status:', data.status);
+        if ((data.status !== 'ERROR' && data.status !== 'VIDEO_AVAILABLE') || isPlaying) {
+            setTimeout(() => {
+                checkVideoStatus();
+            }, 5000);
+        }
+        if (data.status === 'VIDEO_AVAILABLE') {
+            setLoading(false);
+            setIsPlaying(true);
+        }
+    }
+
+    const backClick = () => {
+        setIsPlaying(false);
+    }
     useEffect(() => {
         setMediaElements([]);
         setTextElements([]);
@@ -91,26 +116,33 @@ export const MainForm = (): JSX.Element => {
         setTextElements([...tmpText]);
         setLoading(false);
     }, [storyboard]);
+    useEffect(() => {
+        if (!isLoading) return;
+        checkVideoStatus();
+    }, [checkURL]);
 
     return <>
-        <div className='mainContainer'>
-            <div className='formRow' id="header">Enter the details below in order to generate your video</div>
-            <div className='formRow' id="nameInfo">
-                <UserDetails onChangeUser={changeUserDetails} />
-            </div>
-            <div className='formRow' id="vars">
-                <FileDetails onChangeMedia={changeMedia} elements={mediaElements} />
-            </div>
-            <div className='formRow' id="storyboard">
-                <StoryBoardView onChangeStoryboard={changeStoryboard} elements={textElements} />
-            </div>
-            <div className='formRow' id="videoOpts">
-                <VideoOptions onChangeVideoOptions={changeVideoDetails} />
-            </div>
-            <div className='formRow' id="footer">
-                <button className='genButton' onClick={() => generateVideo()}>Generate</button>
-            </div>
+        {!isPlaying ?
+            <div className='mainContainer'>
+                <div className='formRow' id="header">Enter the details below in order to generate your video</div>
+                <div className='formRow' id="nameInfo">
+                    <UserDetails onChangeUser={changeUserDetails} />
+                </div>
+                <div className='formRow' id="vars">
+                    <FileDetails onChangeMedia={changeMedia} elements={mediaElements} />
+                </div>
+                <div className='formRow' id="storyboard">
+                    <StoryBoardView onChangeStoryboard={changeStoryboard} elements={textElements} />
+                </div>
+                <div className='formRow' id="videoOpts">
+                    <VideoOptions onChangeVideoOptions={changeVideoDetails} />
+                </div>
+                <div className='formRow' id="footer">
+                    <button className='genButton' onClick={generateVideo}>Generate</button>
+                </div>
 
-        </div>
+            </div> :
+            <VideoPlayer videoURL={linkToVideo!} onBackClick={backClick} />
+        }
     </>
 }
