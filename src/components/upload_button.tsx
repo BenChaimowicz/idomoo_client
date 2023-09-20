@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 
 export type UploadButtonProps = { onChangeImageHandler: (e: string) => void };
 
@@ -8,7 +8,7 @@ export const UploadButton = (props: UploadButtonProps): JSX.Element => {
 
     const hiddenInput = useRef<HTMLInputElement>(null);
 
-    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    const handleClick = () => {
         hiddenInput.current!.click();
     }
 

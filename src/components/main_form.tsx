@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './main_form.css';
 import { FileDetails } from './file_details';
 import { OnChangeUserDetailsEvent, UserDetails } from './user_details';
-import { VideoOptions, VideoOptionProps, VideoOptionsForm } from './video_options';
+import { VideoOptions, VideoOptionsForm } from './video_options';
 import { StoryBoardView } from './storyboard';
 import axios from 'axios';
 import { VideoPlayer } from './video_player';

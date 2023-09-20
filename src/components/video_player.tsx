@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 export type VideoProps = { videoURL: string, onBackClick: () => void };
 
 export const VideoPlayer = (props: VideoProps) => {
-    const [videoURL, setVideoURL] = useState<string>();
+    const [, setVideoURL] = useState<string>();
     const iFrameRef = useRef<HTMLIFrameElement>(null);
 
     useEffect(() => {
