@@ -22,3 +22,14 @@
     padding: 0 0.5vw;
     flex: 4;
 }
+
+.fpsContainer {
+    flex: 1;
+    padding-left: 1rem;
+}
+
+input[type="number"] {
+    height: 1rem;
+    width: 2rem;
+    border-color: hsl(0, 0%, 80%);
+}

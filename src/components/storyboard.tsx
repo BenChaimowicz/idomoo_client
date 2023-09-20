@@ -29,7 +29,7 @@ export const StoryBoardView = (props: StoryBoardProps): JSX.Element => {
     return <>
         <div className="varContainer">
             {isLoading ?
-                <div className="loading">Loading...</div>
+                <div className="loading"></div>
                 :
                 <div className="elementContainer">
                     {storyboard.map((d, i) => <div className="inputContainer" key={i}>

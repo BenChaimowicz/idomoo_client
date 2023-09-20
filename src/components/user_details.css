@@ -1,11 +1,15 @@
 .infoContainer {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 35rem;
 }
 
 .nameContainer {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .emailContainer {

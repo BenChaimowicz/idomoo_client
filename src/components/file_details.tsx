@@ -4,6 +4,7 @@ import { ColorButton } from './color_button';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GenerateVideoDataElement, StoryboardElement } from './main_form';
+import { Spinner } from './spinner';
 
 export type FileDetailsProps = { onChangeMedia: (e: GenerateVideoDataElement[]) => void, elements: StoryboardElement[] };
 
@@ -54,7 +55,7 @@ export const FileDetails = (props: FileDetailsProps): JSX.Element => {
 
     return <>{
         isLoading ?
-            <div className="loading">Loading...</div>
+            <div className="loading"><Spinner /></div>
             : mediaElements.map((me, i) =>
                 <div className='mediaContainer' key={i}>
                     <div className='mediaElementContainer'>

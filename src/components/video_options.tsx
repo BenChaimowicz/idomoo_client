@@ -1,5 +1,5 @@
 import './video_options.css';
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Select, { ActionMeta, SingleValue } from 'react-select';
 
 
@@ -25,9 +25,10 @@ const resolutionOptions: SelectOption[] = [
     { value: 540, label: '50% 960x540' },
     { value: 360, label: '33.33% 640x360' },
     { value: 270, label: '25% 480x270' },
-]
+];
 
 export const VideoOptions = (props: VideoOptionProps): JSX.Element => {
+    const [gifSelected, setGIFSelected] = useState<boolean>(false);
     const [videoForm, setVideoForm] = useState<VideoOptionsForm>({
         format: formatOptions[0].value as string,
         quality: qualityOptions[0].value as number,
@@ -38,8 +39,12 @@ export const VideoOptions = (props: VideoOptionProps): JSX.Element => {
         const name = meta.name as keyof VideoOptionsForm;
         setVideoForm(prev => ({ ...prev, [name]: option?.value }));
     };
+    const fpsChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setVideoForm(prev => ({ ...prev, fps: e.target.value }));
+    }
 
     useEffect(() => {
+        videoForm.format === 'gif' ? setGIFSelected(true) : setGIFSelected(false);
         props.onChangeVideoOptions(videoForm);
     }, [videoForm])
 
@@ -106,6 +111,10 @@ export const VideoOptions = (props: VideoOptionProps): JSX.Element => {
                         }
                     })} />
             </div>
+            {gifSelected ? <div className='fpsContainer'>
+                <label htmlFor="fpsInput">FPS</label>
+                <input type="number" name="fpsInput" id="fpsInput" min="1" max="30" defaultValue="15" onChange={fpsChange} />
+            </div> : <></>}
         </div>
     </>
 }
